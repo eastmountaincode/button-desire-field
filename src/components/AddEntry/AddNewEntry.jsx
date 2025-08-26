@@ -24,7 +24,7 @@ function AddNewEntry() {
             <InputTypeSelector onInputDataChange={setInputData} />
             <div>
                 <header>Preview:</header>
-                <SingleEntryView entryData={previewData} />
+                <SingleEntryView entryData={previewData} readOnly={true} />
             </div>
             <button>Add</button>
         </div>

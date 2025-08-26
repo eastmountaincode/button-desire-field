@@ -8,9 +8,13 @@ function MainHeader() {
                     What is a button anyway? 
                     Creating a button is an expression of what we would like to see happen in the world. 
                     A goal we would like to accomplish. 
-                    An outcome we are striving for. 
+                    An outcome we are striving for, a milestone. 
                     A wish. 
-                    Maybe we just want to chill out more.
+                    Maybe we just want to chill out.
+                    What's up with 'wanting' anyway?
+                    
+
+
                 </p>
             </details>
         </div>

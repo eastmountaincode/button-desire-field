@@ -18,7 +18,6 @@ function ButtonCreator({ onButtonTextChange }) {
 
     return (
         <div className="bg-orange-500 border-2 border-pink-500">
-            <header className="text-2xl">Button Creator</header>
             <div>
                 <label>Button text: </label>
                 <input type="text" placeholder="Enter button text" onChange={handleTextChange} />

@@ -11,6 +11,8 @@ function InputTypeSelector({ onInputDataChange }) {
     const [rangeValue, setRangeValue] = useState(50)
     const [rangeStartLabel, setRangeStartLabel] = useState('')
     const [rangeEndLabel, setRangeEndLabel] = useState('')
+    const [timeValue, setTimeValue] = useState('')
+    const [checkedBoxes, setCheckedBoxes] = useState([])
 
     // Update parent whenever relevant data changes
     useEffect(() => {
@@ -19,8 +21,12 @@ function InputTypeSelector({ onInputDataChange }) {
             value: inputType === 'color' ? colorValue 
                  : inputType === 'date' ? dateValue 
                  : inputType === 'range' ? rangeValue
+                 : inputType === 'time' ? timeValue
                  : undefined,
             rangeLabels: inputType === 'range' ? { start: rangeStartLabel, end: rangeEndLabel } : undefined,
+            selectedValues: inputType === 'checkbox' 
+                ? checkedBoxes.map(index => `checkbox-${index}`)
+                : undefined,
             options: inputType === 'checkbox' 
                 ? checkboxLabels.slice(0, checkboxCount).map((label, i) => ({ label, value: `checkbox-${i}` }))
                 : inputType === 'radio'
@@ -28,7 +34,7 @@ function InputTypeSelector({ onInputDataChange }) {
                 : []
         }
         onInputDataChange?.(inputData)
-    }, [inputType, checkboxCount, radioCount, checkboxLabels, radioLabels, colorValue, dateValue, rangeValue, rangeStartLabel, rangeEndLabel, onInputDataChange])
+    }, [inputType, checkboxCount, radioCount, checkboxLabels, radioLabels, colorValue, dateValue, rangeValue, rangeStartLabel, rangeEndLabel, timeValue, checkedBoxes, onInputDataChange])
 
     const handleInputTypeChange = (event) => {
         setInputType(event.target.value)
@@ -68,6 +74,14 @@ function InputTypeSelector({ onInputDataChange }) {
         setRadioLabels(newLabels)
     }
 
+    const handleCheckboxChange = (index, checked) => {
+        if (checked) {
+            setCheckedBoxes([...checkedBoxes, index])
+        } else {
+            setCheckedBoxes(checkedBoxes.filter(i => i !== index))
+        }
+    }
+
     const renderInput = () => {
         switch(inputType) {
             case 'color':
@@ -103,7 +117,7 @@ function InputTypeSelector({ onInputDataChange }) {
                     </div>
                 )
             case 'time':
-                return <input type="time" />
+                return <input type="time" value={timeValue} onChange={(e) => setTimeValue(e.target.value)} />
             case 'checkbox':
                 return (
                     <div>
@@ -119,7 +133,12 @@ function InputTypeSelector({ onInputDataChange }) {
                         <div>
                             {Array.from({length: checkboxCount}, (_, i) => (
                                 <div key={i}>
-                                    <input type="checkbox" id={`checkbox-${i}`} />
+                                    <input 
+                                        type="checkbox" 
+                                        id={`checkbox-${i}`} 
+                                        checked={checkedBoxes.includes(i)}
+                                        onChange={(e) => handleCheckboxChange(i, e.target.checked)}
+                                    />
                                     <label htmlFor={`checkbox-${i}`}>{checkboxLabels[i]}</label>
                                     <input type="text" placeholder="Enter label" />
                                     <button onClick={(e) => {
@@ -168,8 +187,7 @@ function InputTypeSelector({ onInputDataChange }) {
 
     return (
         <div className="bg-purple-500 border-2 border-blue-500">
-            <header className="text-2xl">Input Type Selector</header>
-            <label htmlFor="inputType" className="block">Input type</label>
+            <label htmlFor="inputType" className="block">Additional Input</label>
             <select id="inputType" onChange={handleInputTypeChange}>
                 <option value="none">None</option>
                 <option value="color">Color</option>
