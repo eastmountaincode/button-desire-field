@@ -4,5 +4,10 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+button {
+  all: revert;
+  cursor: pointer;
 }

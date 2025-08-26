@@ -1,7 +1,13 @@
+import MainHeader from "./components/MainHeader";
+import AddNewEntry from "./components/AddEntry/AddNewEntry";
+
 function App() {
   return (
-    <div className="min-h-screen bg-white text-black">
-      <p>Hello world</p>
+    <div className="min-h-screen bg-blue-500 border-2 border-red-500 text-black">
+    <div className="mb-4">
+      <MainHeader />
+    </div>
+    <AddNewEntry />
     </div>
   )
 }
