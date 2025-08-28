@@ -3,8 +3,8 @@ import AddNewEntry from "./components/AddEntry/AddNewEntry";
 
 function App() {
   return (
-    <div className="min-h-screen bg-blue-500 border-2 border-red-500 text-black">
-    <div className="mb-4">
+    <div className="min-h-screen text-black">
+    <div>
       <MainHeader />
     </div>
     <AddNewEntry />

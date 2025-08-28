@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 function ButtonCreator({ onButtonTextChange }) {
-    const [buttonText, setButtonText] = useState('Click me')
+    const [buttonText, setButtonText] = useState('click me')
 
     const handleTextChange = (e) => {
-        const newText = e.target.value || 'Click me'
+        const newText = e.target.value || 'click me'
         setButtonText(newText)
         onButtonTextChange?.(newText)
     }
@@ -12,19 +12,19 @@ function ButtonCreator({ onButtonTextChange }) {
     const handleSetButtonText = (e) => {
         const textInput = e.target.previousElementSibling
         textInput.value = ''
-        setButtonText('Click me')
-        onButtonTextChange?.('Click me')
+        setButtonText('click me')
+        onButtonTextChange?.('click me')
     }
 
     return (
-        <div className="bg-orange-500 border-2 border-pink-500">
-            <div>
-                <label>Button text: </label>
-                <input type="text" placeholder="Enter button text" onChange={handleTextChange} />
-                <button onClick={handleSetButtonText}>Clear</button>
+        <div className="p-2 flex flex-col gap-2">
+            <div className="flex flex-row gap-2">
+                <label>button text: </label>
+                <input type="text" placeholder="enter button text" onChange={handleTextChange} />
+                <button onClick={handleSetButtonText}>clear</button>
             </div>
             <div>
-                <button>{buttonText}</button>
+                <button className="whitespace-pre-wrap break-words max-w-full">{buttonText}</button>
             </div>
         </div>
     )

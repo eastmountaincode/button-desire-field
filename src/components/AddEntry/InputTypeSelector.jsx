@@ -4,8 +4,8 @@ function InputTypeSelector({ onInputDataChange }) {
     const [inputType, setInputType] = useState('none')
     const [checkboxCount, setCheckboxCount] = useState(1)
     const [radioCount, setRadioCount] = useState(1)
-    const [checkboxLabels, setCheckboxLabels] = useState(['Option 1'])
-    const [radioLabels, setRadioLabels] = useState(['Option 1'])
+    const [checkboxLabels, setCheckboxLabels] = useState(['option 1'])
+    const [radioLabels, setRadioLabels] = useState(['option 1'])
     const [colorValue, setColorValue] = useState('#000000')
     const [dateValue, setDateValue] = useState('')
     const [rangeValue, setRangeValue] = useState(50)
@@ -13,28 +13,32 @@ function InputTypeSelector({ onInputDataChange }) {
     const [rangeEndLabel, setRangeEndLabel] = useState('')
     const [timeValue, setTimeValue] = useState('')
     const [checkedBoxes, setCheckedBoxes] = useState([])
+    const [selectedRadio, setSelectedRadio] = useState(null)
 
     // Update parent whenever relevant data changes
     useEffect(() => {
         const inputData = {
             inputType: inputType,
-            value: inputType === 'color' ? colorValue 
-                 : inputType === 'date' ? dateValue 
-                 : inputType === 'range' ? rangeValue
-                 : inputType === 'time' ? timeValue
-                 : undefined,
+            value: inputType === 'color' ? colorValue
+                : inputType === 'date' ? dateValue
+                    : inputType === 'range' ? rangeValue
+                        : inputType === 'time' ? timeValue
+                            : undefined,
             rangeLabels: inputType === 'range' ? { start: rangeStartLabel, end: rangeEndLabel } : undefined,
-            selectedValues: inputType === 'checkbox' 
+            selectedValues: inputType === 'checkbox'
                 ? checkedBoxes.map(index => `checkbox-${index}`)
                 : undefined,
-            options: inputType === 'checkbox' 
+            selectedValue: inputType === 'radio' && selectedRadio !== null
+                ? `radio-${selectedRadio}`
+                : undefined,
+            options: inputType === 'checkbox'
                 ? checkboxLabels.slice(0, checkboxCount).map((label, i) => ({ label, value: `checkbox-${i}` }))
                 : inputType === 'radio'
-                ? radioLabels.slice(0, radioCount).map((label, i) => ({ label, value: `radio-${i}` }))
-                : []
+                    ? radioLabels.slice(0, radioCount).map((label, i) => ({ label, value: `radio-${i}` }))
+                    : []
         }
         onInputDataChange?.(inputData)
-    }, [inputType, checkboxCount, radioCount, checkboxLabels, radioLabels, colorValue, dateValue, rangeValue, rangeStartLabel, rangeEndLabel, timeValue, checkedBoxes, onInputDataChange])
+    }, [inputType, checkboxCount, radioCount, checkboxLabels, radioLabels, colorValue, dateValue, rangeValue, rangeStartLabel, rangeEndLabel, timeValue, checkedBoxes, selectedRadio, onInputDataChange])
 
     const handleInputTypeChange = (event) => {
         setInputType(event.target.value)
@@ -46,7 +50,7 @@ function InputTypeSelector({ onInputDataChange }) {
         // Adjust labels array to match new count
         const newLabels = [...checkboxLabels]
         while (newLabels.length < newCount) {
-            newLabels.push(`Option ${newLabels.length + 1}`)
+            newLabels.push(`option ${newLabels.length + 1}`)
         }
         setCheckboxLabels(newLabels.slice(0, newCount))
     }
@@ -57,7 +61,7 @@ function InputTypeSelector({ onInputDataChange }) {
         // Adjust labels array to match new count
         const newLabels = [...radioLabels]
         while (newLabels.length < newCount) {
-            newLabels.push(`Option ${newLabels.length + 1}`)
+            newLabels.push(`option ${newLabels.length + 1}`)
         }
         setRadioLabels(newLabels.slice(0, newCount))
     }
@@ -82,34 +86,38 @@ function InputTypeSelector({ onInputDataChange }) {
         }
     }
 
+    const handleRadioChange = (index) => {
+        setSelectedRadio(index)
+    }
+
     const renderInput = () => {
-        switch(inputType) {
+        switch (inputType) {
             case 'color':
                 return <input type="color" value={colorValue} onChange={(e) => setColorValue(e.target.value)} />
             case 'date':
                 return <input type="date" value={dateValue} onChange={(e) => setDateValue(e.target.value)} />
             case 'range':
                 return (
-                    <div>
-                        <div>
-                            <label>Start label: </label>
-                            <input type="text" placeholder="Enter start label" />
+                    <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2">
+                            <label>start label: </label>
+                            <input type="text" placeholder="enter start label" />
                             <button onClick={(e) => {
                                 const textInput = e.target.previousElementSibling
                                 setRangeStartLabel(textInput.value)
                                 textInput.value = ''
-                            }}>Set</button>
+                            }}>set</button>
                         </div>
-                        <div>
-                            <label>End label: </label>
-                            <input type="text" placeholder="Enter end label" />
+                        <div className="flex flex-row gap-2">
+                            <label>end label: </label>
+                            <input type="text" placeholder="enter end label" />
                             <button onClick={(e) => {
                                 const textInput = e.target.previousElementSibling
                                 setRangeEndLabel(textInput.value)
                                 textInput.value = ''
-                            }}>Set</button>
+                            }}>set</button>
                         </div>
-                        <div>
+                        <div className="flex flex-row gap-2">
                             <span>{rangeStartLabel}</span>
                             <input type="range" value={rangeValue} onChange={(e) => setRangeValue(e.target.value)} />
                             <span>{rangeEndLabel}</span>
@@ -120,32 +128,34 @@ function InputTypeSelector({ onInputDataChange }) {
                 return <input type="time" value={timeValue} onChange={(e) => setTimeValue(e.target.value)} />
             case 'checkbox':
                 return (
-                    <div>
-                        <label>Number of checkboxes: </label>
-                        <input 
-                            type="number" 
-                            min="1" 
-                            max="3" 
-                            value={checkboxCount}
-                            onChange={handleCheckboxCountChange}
-                            onKeyDown={(e) => e.preventDefault()}
-                        />
-                        <div>
-                            {Array.from({length: checkboxCount}, (_, i) => (
-                                <div key={i}>
-                                    <input 
-                                        type="checkbox" 
-                                        id={`checkbox-${i}`} 
+                    <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2">
+                            <label>number of checkboxes: </label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="3"
+                                value={checkboxCount}
+                                onChange={handleCheckboxCountChange}
+                                onKeyDown={(e) => e.preventDefault()}
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            {Array.from({ length: checkboxCount }, (_, i) => (
+                                <div key={i} className="flex flex-row gap-2">
+                                    <input
+                                        type="checkbox"
+                                        id={`checkbox-${i}`}
                                         checked={checkedBoxes.includes(i)}
                                         onChange={(e) => handleCheckboxChange(i, e.target.checked)}
                                     />
                                     <label htmlFor={`checkbox-${i}`}>{checkboxLabels[i]}</label>
-                                    <input type="text" placeholder="Enter label" />
+                                    <input type="text" placeholder="enter label" />
                                     <button onClick={(e) => {
                                         const textInput = e.target.previousElementSibling
                                         setCheckboxLabel(i, textInput.value)
                                         textInput.value = ''
-                                    }}>Set</button>
+                                    }}>set</button>
                                 </div>
                             ))}
                         </div>
@@ -153,27 +163,36 @@ function InputTypeSelector({ onInputDataChange }) {
                 )
             case 'radio':
                 return (
-                    <div>
-                        <label>Number of radio buttons: </label>
-                        <input 
-                            type="number" 
-                            min="1" 
-                            max="3" 
-                            value={radioCount}
-                            onChange={handleRadioCountChange}
-                            onKeyDown={(e) => e.preventDefault()}
-                        />
-                        <div>
-                            {Array.from({length: radioCount}, (_, i) => (
-                                <div key={i}>
-                                    <input type="radio" name="radioGroup" value={`option${i + 1}`} id={`radio-${i}`} />
+                    <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2">
+                            <label>number of radio buttons: </label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="3"
+                                value={radioCount}
+                                onChange={handleRadioCountChange}
+                                onKeyDown={(e) => e.preventDefault()}
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            {Array.from({ length: radioCount }, (_, i) => (
+                                <div key={i} className="flex flex-row gap-2">
+                                    <input 
+                                        type="radio" 
+                                        name="radioGroup" 
+                                        value={`option${i + 1}`} 
+                                        id={`radio-${i}`}
+                                        checked={selectedRadio === i}
+                                        onChange={() => handleRadioChange(i)}
+                                    />
                                     <label htmlFor={`radio-${i}`}>{radioLabels[i]}</label>
-                                    <input type="text" placeholder="Enter label" />
+                                    <input type="text" placeholder="enter label" />
                                     <button onClick={(e) => {
                                         const textInput = e.target.previousElementSibling
                                         setRadioLabel(i, textInput.value)
                                         textInput.value = ''
-                                    }}>Set</button>
+                                    }}>set</button>
                                 </div>
                             ))}
                         </div>
@@ -186,17 +205,19 @@ function InputTypeSelector({ onInputDataChange }) {
     }
 
     return (
-        <div className="bg-purple-500 border-2 border-blue-500">
-            <label htmlFor="inputType" className="block">Additional Input</label>
-            <select id="inputType" onChange={handleInputTypeChange}>
-                <option value="none">None</option>
-                <option value="color">Color</option>
-                <option value="date">Date</option>
-                <option value="range">Range</option>
-                <option value="time">Time</option>
-                <option value="checkbox">Checkbox</option>
-                <option value="radio">Radio</option>
-            </select>
+        <div className="p-2">
+            <div className="flex flex-row gap-2 mb-2">
+                <label htmlFor="inputType" className="block">additional input</label>
+                <select id="inputType" onChange={handleInputTypeChange}>
+                    <option value="none">none</option>
+                    <option value="color">color</option>
+                    <option value="date">date</option>
+                    <option value="range">range</option>
+                    <option value="time">time</option>
+                    <option value="checkbox">checkbox</option>
+                    <option value="radio">radio</option>
+                </select>
+            </div>
             <div>
                 {renderInput()}
             </div>
