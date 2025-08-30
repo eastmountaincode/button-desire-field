@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import MainHeader from "./components/MainHeader";
 import AddNewEntry from "./components/AddEntry/AddNewEntry";
 import ButtonField from "./components/ButtonField";
@@ -12,6 +13,7 @@ function App() {
       </div>
       <AddNewEntry onSuccess={() => refetchButtonsRef.current?.()} />
       <ButtonField onRefetch={refetchButtonsRef} />
+      <Analytics />
     </div>
   )
 }
