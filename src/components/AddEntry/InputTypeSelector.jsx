@@ -129,16 +129,35 @@ function InputTypeSelector({ onInputDataChange }) {
             case 'checkbox':
                 return (
                     <div className="flex flex-col gap-2">
-                        <div className="flex flex-row gap-2">
+                        <div className="flex flex-row gap-2 items-center">
                             <label>number of checkboxes: </label>
-                            <input
-                                type="number"
-                                min="1"
-                                max="3"
-                                value={checkboxCount}
-                                onChange={handleCheckboxCountChange}
-                                onKeyDown={(e) => e.preventDefault()}
-                            />
+                            <button 
+                                onClick={() => {
+                                    const newCount = Math.max(1, checkboxCount - 1);
+                                    setCheckboxCount(newCount);
+                                    setCheckboxLabels(prev => prev.slice(0, newCount));
+                                }}
+                                disabled={checkboxCount <= 1}
+                                className="w-6 h-6 flex items-center justify-center disabled:opacity-50"
+                            >
+                                -
+                            </button>
+                            <span className="px-2">{checkboxCount}</span>
+                            <button 
+                                onClick={() => {
+                                    const newCount = Math.min(3, checkboxCount + 1);
+                                    setCheckboxCount(newCount);
+                                    const newLabels = [...checkboxLabels];
+                                    while (newLabels.length < newCount) {
+                                        newLabels.push(`option ${newLabels.length + 1}`);
+                                    }
+                                    setCheckboxLabels(newLabels);
+                                }}
+                                disabled={checkboxCount >= 3}
+                                className="w-6 h-6 flex items-center justify-center disabled:opacity-50"
+                            >
+                                +
+                            </button>
                         </div>
                         <div className="flex flex-col gap-2">
                             {Array.from({ length: checkboxCount }, (_, i) => (
@@ -164,16 +183,35 @@ function InputTypeSelector({ onInputDataChange }) {
             case 'radio':
                 return (
                     <div className="flex flex-col gap-2">
-                        <div className="flex flex-row gap-2">
+                        <div className="flex flex-row gap-2 items-center">
                             <label>number of radio buttons: </label>
-                            <input
-                                type="number"
-                                min="1"
-                                max="3"
-                                value={radioCount}
-                                onChange={handleRadioCountChange}
-                                onKeyDown={(e) => e.preventDefault()}
-                            />
+                            <button 
+                                onClick={() => {
+                                    const newCount = Math.max(1, radioCount - 1);
+                                    setRadioCount(newCount);
+                                    setRadioLabels(prev => prev.slice(0, newCount));
+                                }}
+                                disabled={radioCount <= 1}
+                                className="w-6 h-6 flex items-center justify-center disabled:opacity-50"
+                            >
+                                -
+                            </button>
+                            <span className="px-2">{radioCount}</span>
+                            <button 
+                                onClick={() => {
+                                    const newCount = Math.min(3, radioCount + 1);
+                                    setRadioCount(newCount);
+                                    const newLabels = [...radioLabels];
+                                    while (newLabels.length < newCount) {
+                                        newLabels.push(`option ${newLabels.length + 1}`);
+                                    }
+                                    setRadioLabels(newLabels);
+                                }}
+                                disabled={radioCount >= 3}
+                                className="w-6 h-6 flex items-center justify-center disabled:opacity-50"
+                            >
+                                +
+                            </button>
                         </div>
                         <div className="flex flex-col gap-2">
                             {Array.from({ length: radioCount }, (_, i) => (
