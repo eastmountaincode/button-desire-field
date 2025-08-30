@@ -3,7 +3,7 @@ import InputTypeSelector from './InputTypeSelector'
 import ButtonCreator from './ButtonCreator'
 import SingleEntryView from '../SingleEntryView'
 
-function AddNewEntry() {
+function AddNewEntry({ onSuccess }) {
     const [buttonText, setButtonText] = useState('Click me')
     const [inputData, setInputData] = useState({ inputType: 'none' })
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -51,6 +51,9 @@ function AddNewEntry() {
         
             alert('Entry added successfully!')
             
+            // Trigger refetch of button field
+            onSuccess?.()
+            
         } catch (error) {
             console.error('Error submitting entry:', error)
             alert('Error adding entry. Please try again.')
@@ -65,11 +68,11 @@ function AddNewEntry() {
             <div className="flex flex-col gap-2 mt-2">
                 <ButtonCreator onButtonTextChange={setButtonText} />
                 <InputTypeSelector onInputDataChange={setInputData} />
-                <div className="p-2">
+                <div className="my-2">
                     <header>preview:</header>
                     <SingleEntryView entryData={previewData} readOnly={true} />
                 </div>
-                <div className="p-2">
+                <div className="my-2">
                     <button 
                         className="self-start disabled:opacity-50" 
                         onClick={handleSubmit}

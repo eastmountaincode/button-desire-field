@@ -205,7 +205,7 @@ function InputTypeSelector({ onInputDataChange }) {
     }
 
     return (
-        <div className="p-2">
+        <div className="my-2">
             <div className="flex flex-row gap-2 mb-2">
                 <label htmlFor="inputType" className="block">additional input</label>
                 <select id="inputType" onChange={handleInputTypeChange}>

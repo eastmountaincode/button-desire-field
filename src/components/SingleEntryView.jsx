@@ -1,6 +1,33 @@
-function SingleEntryView({ entryData, readOnly = false }) {
+function SingleEntryView({ entryData, readOnly = false, preview = true }) {
     if (!entryData) {
         return <div>No entry data provided</div>
+    }
+
+    const handleButtonClick = async () => {
+        if (preview || !entryData.id) return // Don't increment clicks in preview mode or if no ID
+        
+        try {
+            // Call the secure increment function
+            await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/increment_entry_clicks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                },
+                body: JSON.stringify({ 
+                    entry_id: entryData.id
+                })
+            })
+            
+            // Update local state to reflect the change immediately
+            if (entryData.onClickUpdate) {
+                entryData.onClickUpdate(entryData.id)
+            }
+            
+        } catch (error) {
+            console.error('Error updating clicks:', error)
+        }
     }
 
     const renderInput = () => {
@@ -60,16 +87,28 @@ function SingleEntryView({ entryData, readOnly = false }) {
     }
 
     return (
-        <div className="flex items-start gap-2">
+        <div className="flex items-start gap-2 items-center">
             {/* Timestamp */}
-            <span>{entryData.timestamp || new Date().toLocaleDateString()}</span>
+            <span className="text-xs mr-2">{entryData.timestamp || new Date().toLocaleDateString()}</span>
             
             {/* Render the input based on the data */}
             {renderInput()}
             
             {/* Render the custom button */}
             {entryData.buttonText && (
-                <button className="whitespace-pre-wrap break-words min-w-0 flex-shrink">{entryData.buttonText}</button>
+                <button 
+                    className="whitespace-pre-wrap break-words min-w-0 flex-shrink"
+                    onClick={handleButtonClick}
+                >
+                    {entryData.buttonText}
+                </button>
+            )}
+            
+            {/* Show click count if not in preview mode */}
+            {!preview && (
+                <span className="text-xs text-gray-600">
+                    {entryData.clicks || 0} clicks
+                </span>
             )}
         </div>
     )

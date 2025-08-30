@@ -1,7 +1,7 @@
 function MainHeader() {
     return (
         <div className="flex flex-col gap-2 p-2">
-            <header>button desire forcefield</header>
+            <header className="mb-2">&lt;button&gt; &lt;desire&gt; &lt;forcefield&gt;</header>
             <details>
                 <summary className="select-none cursor-pointer">about</summary>
                 <p>
