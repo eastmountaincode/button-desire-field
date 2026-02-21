@@ -87,9 +87,9 @@ function SingleEntryView({ entryData, readOnly = false, preview = true }) {
     }
 
     return (
-        <div className="flex items-start gap-2 items-center">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             {/* Timestamp */}
-            <span className="text-xs mr-2">{entryData.timestamp || new Date().toLocaleDateString()}</span>
+            <span className="text-xs">{entryData.timestamp || new Date().toLocaleDateString()}</span>
             
             {/* Render the input based on the data */}
             {renderInput()}
@@ -97,7 +97,7 @@ function SingleEntryView({ entryData, readOnly = false, preview = true }) {
             {/* Render the custom button */}
             {entryData.buttonText && (
                 <button 
-                    className="whitespace-pre-wrap break-words min-w-0 flex-shrink"
+                    className="break-words"
                     onClick={handleButtonClick}
                 >
                     {entryData.buttonText}

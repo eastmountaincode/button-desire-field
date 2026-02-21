@@ -11,3 +11,20 @@ button {
   all: revert;
   cursor: pointer;
 }
+
+/* Hide default disclosure triangle */
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Custom text arrows */
+summary::before {
+  content: '▸ ';
+  font-family: 'Times New Roman', Times, serif;
+}
+details[open] > summary::before {
+  content: '▾ ';
+}
